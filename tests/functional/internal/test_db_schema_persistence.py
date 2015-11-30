@@ -10,8 +10,8 @@ TABLE_NAME = "tabloid"
 TABLE_RT = 45
 TABLE_WT = 123
 
-HASH_KEY = {"AttributeName":"hash_key","KeyType":"N"}
-RANGE_KEY = {"AttributeName":"range_key","KeyType":"S"}
+HASH_KEY = {"AttributeName":"hash_key","KeyType":"HASH"}
+RANGE_KEY = {"AttributeName":"range_key","KeyType":"RANGE"}
 
 class TestDBSchemaPersist(unittest.TestCase):
     @mock.patch('ddbmock.database.db.Store')

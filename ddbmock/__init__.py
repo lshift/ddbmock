@@ -38,29 +38,30 @@ def connect_boto_patch(aws_access_key_id=None):
     """Connect to ddbmock as a library via boto"""
     import boto
 
-    if real_boto:
-        return boto.connect_dynamodb()
+    from boto.dynamodb2.layer1 import DynamoDBConnection
 
-    from boto.dynamodb.layer1 import Layer1
+    if real_boto:
+        return DynamoDBConnection(aws_access_key_id)
+
     from router.boto import boto_router
 
     # Backup real functions for potential cleanup
-    real_boto['Layer1.make_request'] = Layer1.make_request
-    real_boto['Layer1.__init__'] = Layer1.__init__
+    real_boto['DynamoDBConnection.make_request'] = DynamoDBConnection.make_request
+    real_boto['DynamoDBConnection.__init__'] = DynamoDBConnection.__init__
 
     # Bypass network *and* authentication
-    Layer1.make_request = boto_router
-    Layer1.__init__ = layer1_mock_init
+    DynamoDBConnection.make_request = boto_router
+    DynamoDBConnection.__init__ = layer1_mock_init
 
     # Just one more shortcut
-    return boto.connect_dynamodb(aws_access_key_id = aws_access_key_id)
+    return DynamoDBConnection(aws_access_key_id)
 
 def clean_boto_patch():
     """Restore real boto code"""
     if real_boto:
-        from boto.dynamodb.layer1 import Layer1
+        from boto.dynamodb2.layer1 import DynamoDBConnection
 
-        Layer1.make_request = real_boto['Layer1.make_request']
-        Layer1.__init__ = real_boto['Layer1.__init__']
+        DynamoDBConnection.make_request = real_boto['DynamoDBConnection.make_request']
+        DynamoDBConnection.__init__ = real_boto['DynamoDBConnection.__init__']
 
         real_boto.clear()

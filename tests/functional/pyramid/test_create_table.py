@@ -12,9 +12,10 @@ TABLE_RT = 45
 TABLE_WT = 123
 
 HASH_KEY = {"AttributeName": "hash_key", "KeyType": "HASH"}
+ATTR_DEF = {"AttributeName": "hash_key", "AttributeType": "S"}
 
 HEADERS = {
-    'x-amz-target': 'dynamodb_20111205.CreateTable',
+    'x-amz-target': 'dynamodb_20120810.CreateTable',
     'content-type': 'application/x-amz-json-1.0',
 }
 
@@ -43,7 +44,8 @@ class TestCreateTable(unittest.TestCase):
             "ProvisionedThroughput": {
                 "ReadCapacityUnits": TABLE_RT,
                 "WriteCapacityUnits": TABLE_WT,
-            }
+            },
+            "AttributeDefinitions": [ATTR_DEF],
         }
 
         expected = {
@@ -85,7 +87,8 @@ class TestCreateTable(unittest.TestCase):
             "ProvisionedThroughput": {
                 "ReadCapacityUnits": TABLE_RT,
                 "WriteCapacityUnits": TABLE_WT,
-            }
+            },
+            "AttributeDefinitions": [ATTR_DEF],
         }
 
         expected = {

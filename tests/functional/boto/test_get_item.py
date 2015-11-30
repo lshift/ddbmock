@@ -78,7 +78,7 @@ class TestGetItem(unittest.TestCase):
             u"RangeKeyElement": {TABLE_RK_TYPE: RK_VALUE},
         }
 
-        self.assertEquals(expected, db.layer1.get_item(TABLE_NAME, key))
+        self.assertEquals(expected, db.get_item(TABLE_NAME, key))
 
     def test_get_hr_consistent(self):
         from ddbmock import connect_boto_patch
@@ -96,7 +96,7 @@ class TestGetItem(unittest.TestCase):
             u"RangeKeyElement": {TABLE_RK_TYPE: RK_VALUE},
         }
 
-        self.assertEquals(expected, db.layer1.get_item(TABLE_NAME, key, consistent_read=True))
+        self.assertEquals(expected, db.get_item(TABLE_NAME, key, consistent_read=True))
 
     def test_get_h(self):
         from ddbmock import connect_boto_patch
@@ -113,7 +113,7 @@ class TestGetItem(unittest.TestCase):
             u"HashKeyElement":  {TABLE_HK_TYPE: HK_VALUE},
         }
 
-        self.assertEquals(expected, db.layer1.get_item(TABLE_NAME2, key))
+        self.assertEquals(expected, db.get_item(TABLE_NAME2, key))
 
     def test_get_consistent_big_attributes_to_get(self):
         from ddbmock import connect_boto_patch
@@ -130,7 +130,7 @@ class TestGetItem(unittest.TestCase):
             u"HashKeyElement":  {TABLE_HK_TYPE: HK_VALUE2},
         }
 
-        self.assertEquals(expected, db.layer1.get_item(TABLE_NAME2, key, consistent_read=True, attributes_to_get=[TABLE_HK_NAME]))
+        self.assertEquals(expected, db.get_item(TABLE_NAME2, key, consistent_read=True, attributes_to_get=[TABLE_HK_NAME]))
 
     def test_get_h_404(self):
         from ddbmock import connect_boto_patch
@@ -143,9 +143,11 @@ class TestGetItem(unittest.TestCase):
             u"HashKeyElement":  {TABLE_HK_TYPE: HK_VALUE_404},
         }
 
-        self.assertRaises(DynamoDBKeyNotFoundError,
-                          db.layer1.get_item,
-                          TABLE_NAME2, key)
+        expected = {
+            u'ConsumedCapacityUnits': 0.5,
+        }
+
+        self.assertEquals(expected, db.get_item(TABLE_NAME2, key))
 
     def test_get_hr_attr_to_get(self):
         from ddbmock import connect_boto_patch
@@ -164,4 +166,4 @@ class TestGetItem(unittest.TestCase):
             u"RangeKeyElement": {TABLE_RK_TYPE: RK_VALUE},
         }
 
-        self.assertEquals(expected, db.layer1.get_item(TABLE_NAME, key, attributes_to_get=[u'relevant_data']))
+        self.assertEquals(expected, db.get_item(TABLE_NAME, key, attributes_to_get=[u'relevant_data']))

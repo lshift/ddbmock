@@ -415,13 +415,15 @@ class Table(object):
         :return: fully initialized :py:class:`Table` instance
         """
 
-        hash_key = None
-        range_key = None
-        key = PrimaryKey.from_dict(data[u'KeySchema'][0])
-        if key.typename == "HASH":
-            hash_key = key
+        key_schema = data[u'KeySchema']
+        assert len(key_schema) <= 2
+        hash_key = PrimaryKey.from_dict(key_schema[0])
+        assert hash_key.typename == "HASH"
+        if len(key_schema) == 2:
+            range_key = Key.from_dict(key_schema[1])
+            assert range_key.typename == "RANGE"
         else:
-            range_key = key
+            range_key = None
 
         return cls( data[u'TableName'],
                     data[u'ProvisionedThroughput'][u'ReadCapacityUnits'],

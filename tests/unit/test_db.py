@@ -12,7 +12,7 @@ TABLE_NAME2 = "razoroid"
 TABLE_RT = 45
 TABLE_WT = 123
 
-HASH_KEY = {"AttributeName":"hash_key","KeyType":"N"}
+HASH_KEY = {"AttributeName":"hash_key","KeyType":"HASH"}
 
 class TestDB(unittest.TestCase):
     def setUp(self):

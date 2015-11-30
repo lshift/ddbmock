@@ -29,7 +29,7 @@ def _ddbmock_exception_to_boto_exception(err):
 def boto_router(self, action, body='', object_hook=None):
     """Replace boto.layer1.make_request to avoid the network layer. It also
     skips the authentication part. The external behavior is strictly compatible"""
-    target = '%s_%s.%s' % (self.ServiceName, self.Version, action)
+    target = '%s_%s.%s' % (self.ServiceName, self.APIVersion, action)
     start = time.time()
 
     post = json.loads(body)

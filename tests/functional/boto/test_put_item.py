@@ -128,7 +128,7 @@ class TestPutItem(unittest.TestCase):
         self.assertEqual({
                 u'ConsumedCapacityUnits': 1,
             },
-            db.layer1.put_item(TABLE_NAME, ITEM),
+            db.put_item(TABLE_NAME, ITEM),
         )
         self.assertEqual(ITEM, self.t1.store[HK_VALUE, RK_VALUE])
 
@@ -136,7 +136,7 @@ class TestPutItem(unittest.TestCase):
                 u'ConsumedCapacityUnits': 1,
                 u'Attributes': ITEM,
             },
-            db.layer1.put_item(TABLE_NAME, ITEM2, return_values=u'ALL_OLD'),
+            db.put_item(TABLE_NAME, ITEM2, return_values=u'ALL_OLD'),
         )
 
     def test_put_h(self):
@@ -148,7 +148,7 @@ class TestPutItem(unittest.TestCase):
         self.assertEqual({
                 u'ConsumedCapacityUnits': 1,
             },
-            db.layer1.put_item(TABLE_NAME2, ITEM3),
+            db.put_item(TABLE_NAME2, ITEM3),
         )
         self.assertEqual(ITEM3, self.t2.store[HK_VALUE, False])
 
@@ -156,7 +156,7 @@ class TestPutItem(unittest.TestCase):
                 u'ConsumedCapacityUnits': 1,
                 u'Attributes': ITEM3,
             },
-            db.layer1.put_item(TABLE_NAME2, ITEM4, return_values=u'ALL_OLD'),
+            db.put_item(TABLE_NAME2, ITEM4, return_values=u'ALL_OLD'),
         )
 
     def test_put_check_throughput_max_old_new(self):
@@ -167,15 +167,15 @@ class TestPutItem(unittest.TestCase):
 
         self.assertEqual(
             {u'ConsumedCapacityUnits': 1},
-            db.layer1.put_item(TABLE_NAME2, ITEM3),
+            db.put_item(TABLE_NAME2, ITEM3),
         )
         self.assertEqual(
             {u'ConsumedCapacityUnits': 2},
-            db.layer1.put_item(TABLE_NAME2, ITEM_BIG),
+            db.put_item(TABLE_NAME2, ITEM_BIG),
         )
         self.assertEqual(
             {u'ConsumedCapacityUnits': 2},
-            db.layer1.put_item(TABLE_NAME2, ITEM3),
+            db.put_item(TABLE_NAME2, ITEM3),
         )
 
     def test_put_h_empty_field_fail(self):
@@ -188,13 +188,13 @@ class TestPutItem(unittest.TestCase):
         db = connect_boto_patch()
 
         self.assertRaises(DynamoDBValidationError,
-                          db.layer1.put_item,
+                          db.put_item,
                           TABLE_NAME2, ITEM3_EMPTY_SET)
 
         self.assertNotIn((HK_VALUE, False), self.t2.store)
 
         self.assertRaises(DynamoDBValidationError,
-                          db.layer1.put_item,
+                          db.put_item,
                           TABLE_NAME2, ITEM3_EMPTY_FIELD)
 
         self.assertNotIn((HK_VALUE, False), self.t2.store)
@@ -207,7 +207,7 @@ class TestPutItem(unittest.TestCase):
         db = connect_boto_patch()
 
         self.assertRaisesRegexp(DynamoDBResponseError, 'ResourceNotFoundException',
-                                db.layer1.put_item,
+                                db.put_item,
                                 TABLE_NAME_404, ITEM)
 
     def test_put_h_404(self):
@@ -218,7 +218,7 @@ class TestPutItem(unittest.TestCase):
         db = connect_boto_patch()
 
         self.assertRaisesRegexp(DynamoDBResponseError, 'ResourceNotFoundException',
-                                db.layer1.put_item,
+                                db.put_item,
                                 TABLE_NAME_404, ITEM3)
 
     def test_put_hr_missing_r(self):
@@ -229,7 +229,7 @@ class TestPutItem(unittest.TestCase):
         db = connect_boto_patch()
 
         self.assertRaises(DynamoDBValidationError,
-                          db.layer1.put_item,
+                          db.put_item,
                           TABLE_NAME, ITEM3)
 
     def test_put_h_missing_h(self):
@@ -240,7 +240,7 @@ class TestPutItem(unittest.TestCase):
         db = connect_boto_patch()
 
         self.assertRaises(DynamoDBValidationError,
-                          db.layer1.put_item,
+                          db.put_item,
                           TABLE_NAME2, ITEM5)
 
     def test_put_h_expect_no_exist(self):
@@ -254,10 +254,10 @@ class TestPutItem(unittest.TestCase):
             TABLE_HK_NAME: {u'Exists': False}
         }
 
-        db.layer1.put_item(TABLE_NAME2, ITEM3, expected=ddb_expected)
+        db.put_item(TABLE_NAME2, ITEM3, expected=ddb_expected)
 
         self.assertRaisesRegexp(DynamoDBResponseError, 'ConditionalCheckFailedException',
-            db.layer1.put_item,
+            db.put_item,
             TABLE_NAME2, ITEM4, expected=ddb_expected
         )
         self.assertEqual(ITEM3, self.t2.store[HK_VALUE, False])
@@ -276,12 +276,12 @@ class TestPutItem(unittest.TestCase):
             }
         }
 
-        db.layer1.put_item(TABLE_NAME2, ITEM3)
+        db.put_item(TABLE_NAME2, ITEM3)
         self.assertEqual(ITEM3, self.t2.store[HK_VALUE, False])
-        db.layer1.put_item(TABLE_NAME2, ITEM4, expected=ddb_expected)
+        db.put_item(TABLE_NAME2, ITEM4, expected=ddb_expected)
         self.assertEqual(ITEM4, self.t2.store[HK_VALUE, False])
         self.assertRaisesRegexp(DynamoDBResponseError, 'ConditionalCheckFailedException',
-            db.layer1.put_item,
+            db.put_item,
             TABLE_NAME2, ITEM4, expected=ddb_expected
         )
 
@@ -292,9 +292,9 @@ class TestPutItem(unittest.TestCase):
 
         db = connect_boto_patch()
 
-        db.layer1.put_item(TABLE_NAME3, ITEM_MAX_H)
+        db.put_item(TABLE_NAME3, ITEM_MAX_H)
         self.assertRaisesRegexp(DynamoDBValidationError, 'bytes',
-            db.layer1.put_item,
+            db.put_item,
             TABLE_NAME3, ITEM_OVER_H)
 
     def test_put_oversized_r(self):
@@ -304,9 +304,9 @@ class TestPutItem(unittest.TestCase):
 
         db = connect_boto_patch()
 
-        db.layer1.put_item(TABLE_NAME3, ITEM_MAX_R)
+        db.put_item(TABLE_NAME3, ITEM_MAX_R)
         self.assertRaisesRegexp(DynamoDBValidationError, 'bytes',
-            db.layer1.put_item,
+            db.put_item,
             TABLE_NAME3, ITEM_OVER_R)
 
     def test_put_oversized_item(self):
@@ -317,7 +317,7 @@ class TestPutItem(unittest.TestCase):
         db = connect_boto_patch()
 
         self.assertRaisesRegexp(DynamoDBValidationError, 'Item size.*exceeded',
-            db.layer1.put_item,
+            db.put_item,
             TABLE_NAME2, ITEM_HUGE)
 
         self.assertNotIn((HK_VALUE, False), self.t2.store)
@@ -330,4 +330,4 @@ class TestPutItem(unittest.TestCase):
         from ddbmock.database.db import dynamodb
 
         db = connect_boto_patch()
-        db.layer1.put_item(TABLE_NAME2, ITEM_REGRESION)
+        db.put_item(TABLE_NAME2, ITEM_REGRESION)

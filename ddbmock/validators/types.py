@@ -212,3 +212,6 @@ scan_filter = {
 
 READ_PERMISSION = "read"
 WRITE_PERMISSION = "write"
+
+def anything(x):
+    return x
