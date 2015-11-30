@@ -139,8 +139,7 @@ item_schema = {
 }
 
 get_key_schema = {
-    u'HashKeyElement': key_field_value,
-    Optional(u'RangeKeyElement'): key_field_value,
+    unicode: key_field_value,
 }
 
 attributes_to_get_schema = All(

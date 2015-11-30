@@ -59,7 +59,6 @@ class TestGetItem(unittest.TestCase):
                 "HashKeyElement": HK,
                 "RangeKeyElement": RK,
             },
-            "AttributesToGet": ["relevant_data"],
         }
 
         expected = {
